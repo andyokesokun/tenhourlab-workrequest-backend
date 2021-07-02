@@ -1,3 +1,4 @@
+from application.apis import index
 from datetime import datetime
 from . import db
 
@@ -33,14 +34,15 @@ class Employee(db.Model):
 class WorkOrder(db.Model):
     __tablename__ ="workOrders"
     id=db.Column(db.Integer,primary_key = True)
-    serviceId= db.Column(db.Integer,nullable=False)
-    employeeId = db.Column(db.String(20))
+    customerId= db.Column(db.Integer,nullable=False)
     createdAt = db.Column(db.DateTime,nullable=False, default = datetime.now)
-    orderDate = db.Column(db.DateTime,nullable=False)
+    orderDate = db.Column(db.DateTime,nullable=False, index=True)
 
 
-    customerId = db.Column(db.Integer, db.ForeignKey("services.id"), nullable = False)
+    serviceId = db.Column(db.Integer, db.ForeignKey("services.id"), nullable = False)
     employeeId = db.Column(db.Integer, db.ForeignKey("employees.id"), nullable = False)
+
+
 
     
 

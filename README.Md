@@ -1,5 +1,5 @@
 
-## Create DATABASE
+## Create Database
 create database locally with name tenhourlab_workrequest
 
 ## Add Application Dependencies
@@ -7,14 +7,15 @@ create database locally with name tenhourlab_workrequest
 
 
 ## ENV File
-1. Add a .env file to root directory of application
+1. create a filename named .env file to the root directory of the application
 2. Add lines below to .env file
     ```
     DATABASE_URL=mysql+pymysql://<username>:<password>@localhost/tenhourlab_workrequest
     FLASK_ENV = development 
     ```
+3. Replace values above with your env values 
 
-## RUN
+## Run
 ```
 flask db migrate
 flask db upgrade
