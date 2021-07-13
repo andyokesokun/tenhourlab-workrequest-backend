@@ -35,7 +35,7 @@ def upgrade():
     )
     op.create_table('workOrders',
     sa.Column('id', sa.Integer(), nullable=False),
-    sa.Column('customerId', sa.Integer(), nullable=False),
+    sa.Column('customerId', sa.String(length=20), nullable=False),
     sa.Column('createdAt', sa.DateTime(), nullable=False),
     sa.Column('orderDate', sa.DateTime(), nullable=False),
     sa.Column('serviceId', sa.Integer(), nullable=False),

@@ -27,8 +27,8 @@ class  ServiceSeeder(Seeder):
         ]
         
         # Create 5 Services
-        for services in services:
-            print("Adding  services: %s" % services)
-            self.db.session.add(services)
+        for service in services:
+            print("Adding  services: %s" % service)
+            self.db.session.add(service)
 
 
