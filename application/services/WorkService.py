@@ -1,9 +1,11 @@
 from datetime import datetime
-from functools import partial
-from application.utils import formatDurationTime
+from operator import and_
+
+from sqlalchemy.sql.expression import false, true
+from application.utils import format_duration_time, get_end_date, to_date_string
 from ..models import Service,Employee, WorkOrder
 from .. import db
-from ..schemas import ServiceSchema, WorkOrderSchema
+import application.schemas as schemas
 from sqlalchemy import  func
 from dateutil.parser import *
 
@@ -12,33 +14,51 @@ class WorkService():
     @staticmethod
     def getAllServices():
         services=Service.query.all()
-        data=ServiceSchema(many=True, only=("id","name", "duration")).dump(services)
-        print(services[0].name)
-        for d in data:
-            d["duration"] = formatDurationTime(d["duration"])
+        return schemas.ServiceSchema(many=True).dump(services)
+    
+    
+    @staticmethod
+    def getServiceById(serviceId):
+        service =Service.query.get(serviceId)
+        return schemas.ServiceSchema().dump(service)
 
-        return data;
+        
 
     @staticmethod
-    def createWorkOrder(customerId,serviceId, orderDate):
-        orderDate = parse(orderDate)
-        employee =  WorkService.assignWorkLoadToAvailableEmployee(orderDate)
-        workOrder=WorkOrder(customerId,serviceId, employee.id,orderDate ) 
+    def createWorkOrder(customerId,serviceId, startDate):
+        startDate = parse(startDate)
+        employee =  WorkService.assignWorkLoadToAvailableEmployee(startDate)
+        workOrder=WorkOrder(customerId,serviceId, employee.id,startDate ) 
         db.session.add(workOrder)
         db.session.commit()
-        return WorkOrderSchema().dump(workOrder)
-
+        return schemas.WorkOrderSchema().dump(workOrder)
+        
 
     @staticmethod
-    def  assignWorkLoadToAvailableEmployee(orderDate):
+    def  assignWorkLoadToAvailableEmployee(startDate):
         return Employee.query.order_by(func.rand()).limit(1).first()  
 
     @staticmethod
     def getWorkServices():
         works = WorkOrder.query.all()
-        data = WorkOrderSchema(many =True).dump(works)
+        return  schemas.WorkOrderSchema(many =True).dump(works)
 
-        return data
+    @staticmethod
+    def checkIfBookDateAvailable(serviceId, startDateStr):
+        today = datetime.now()
+        works =WorkOrder.query.filter_by(serviceId = serviceId).filter(WorkOrder.startDate >= today).all()
+
+        data=schemas.WorkOrderSchema(many =True).dump(works)
+
+        for workOrder in data:
+             # booking done within and allocated time 
+             if startDateStr >= workOrder["startDate"] and startDateStr <= workOrder["endDate"]:  
+                 return  False
+        
+        return True
+       
+
+        
 
 
 

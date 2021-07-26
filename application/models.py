@@ -33,24 +33,22 @@ class Employee(db.Model):
        self.name = name
 
 
-
-
 class WorkOrder(db.Model):
     __tablename__ ="workOrders"
     id=db.Column(db.Integer,primary_key = True)
     customerId= db.Column(db.String(100),nullable=False)
     createdAt = db.Column(db.DateTime,nullable=False, default = datetime.now)
-    orderDate = db.Column(db.DateTime,nullable=False, index=True)
+    startDate = db.Column(db.DateTime,nullable=False, index=True)
 
     serviceId = db.Column(db.Integer, db.ForeignKey("services.id"), nullable = False)
     employeeId = db.Column(db.Integer, db.ForeignKey("employees.id"), nullable = False)
+    
 
-
-    def __init__(self,customerId,serviceId,employeeId,orderDate):
+    def __init__(self,customerId,serviceId,employeeId,startDate):
        self.serviceId = serviceId
        self.customerId = customerId
        self.employeeId =employeeId
-       self.orderDate = orderDate
+       self.startDate = startDate
 
 
 
